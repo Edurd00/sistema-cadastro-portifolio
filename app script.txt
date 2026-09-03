@@ -1,0 +1,119 @@
+function doPost(e) {
+
+  try {
+
+    const ID_PLANILHA =
+    "YOUR_SPREADSHEET_ID_HERE";
+
+    const planilha =
+    SpreadsheetApp.openById(
+      ID_PLANILHA
+    );
+
+    const aba =
+    planilha.getSheetByName(
+      "Membros"
+    );
+
+    const dados =
+    JSON.parse(
+      e.postData.contents
+    );
+
+    const cpf =
+    limparCPF(dados.cpf);
+
+    /* CHAVE ÚNICA */
+
+    const props =
+    PropertiesService
+      .getScriptProperties();
+
+    const chaveCPF =
+    "cpf_" + cpf;
+
+    /* VERIFICAR CPF */
+
+    if(props.getProperty(chaveCPF)){
+
+      return resposta({
+        sucesso: false,
+        mensagem:
+        "CPF já existe."
+      });
+    }
+
+    /* SALVAR CPF IMEDIATAMENTE */
+
+    props.setProperty(
+      chaveCPF,
+      "true"
+    );
+
+    /* SALVAR MEMBRO */
+
+    aba.appendRow([
+
+      dados.nome || "",
+
+      dados.nascimento || "",
+
+      cpf,
+
+      dados.batismo || "",
+
+      dados.contato || "",
+
+      dados.cidade || "",
+
+      dados.estado || "",
+
+      dados.porte || "",
+
+      dados.sede || "",
+
+      dados.endereco || "",
+
+      dados.pastor || "",
+
+      dados.codigo || ""
+
+    ]);
+
+    return resposta({
+      sucesso: true,
+      mensagem:
+      "Cadastro realizado com sucesso!"
+    });
+
+  } catch(erro){
+
+    return resposta({
+      sucesso: false,
+      mensagem:
+      erro.toString()
+    });
+  }
+}
+
+/* LIMPAR CPF */
+
+function limparCPF(cpf){
+
+  return String(cpf)
+    .replace(/\D/g, "")
+    .trim();
+}
+
+/* RESPOSTA */
+
+function resposta(objeto){
+
+  return ContentService
+    .createTextOutput(
+      JSON.stringify(objeto)
+    )
+    .setMimeType(
+      ContentService.MimeType.JSON
+    );
+}

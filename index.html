@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Corporate Member Registration</title>
+
+    <link rel="icon" href="img/favicon.jpg" type="favicon/png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="header-logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logo-icon">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            <h2>Member Register Pro</h2>
+        </div>
+
+        <h1>
+            Cadastro de Membros
+        </h1>
+
+        <p class="subtitulo">
+            Sistema administrativo da Empresa Genérica
+        </p>
+
+        <form id="formulario">
+
+            <div class="grid">
+
+                <div class="campo">
+
+                    <label>Nome Completo</label>
+
+                    <input type="text" id="nome" required>
+
+                </div>
+
+                <div class="campo">
+
+                    <label>Data de Nascimento</label>
+
+                    <input type="date" id="nascimento" required>
+
+                </div>
+
+                <div class="campo">
+
+                    <label>CPF</label>
+
+                    <input type="text" id="cpf" required>
+
+                    <small id="erro-cpf"></small>
+
+                </div>
+
+                <div class="campo">
+
+                    <label>Tempo de Empresa (anos)</label>
+
+                    <input type="number" id="batismo" required>
+
+                </div>
+
+                <div class="campo">
+
+                    <label>Cidade</label>
+
+                    <input type="text" id="cidade" required>
+
+                </div>
+
+                <div class="campo">
+
+                    <label>Contato</label>
+
+                    <input type="text" id="contato" required>
+
+                </div>
+
+
+
+                <div class="campo">
+
+                    <label>Estado</label>
+
+                    <select id="estado" required>
+
+                        <option value="">
+                            Selecione
+                        </option>
+
+                        <option>AC</option>
+                        <option>AL</option>
+                        <option>AP</option>
+                        <option>AM</option>
+                        <option>BA</option>
+                        <option>CE</option>
+                        <option>DF</option>
+                        <option>ES</option>
+                        <option>GO</option>
+                        <option>MA</option>
+                        <option>MT</option>
+                        <option>MS</option>
+                        <option>MG</option>
+                        <option>PA</option>
+                        <option>PB</option>
+                        <option>PR</option>
+                        <option>PE</option>
+                        <option>PI</option>
+                        <option>RJ</option>
+                        <option>RN</option>
+                        <option>RS</option>
+                        <option>RO</option>
+                        <option>RR</option>
+                        <option>SC</option>
+                        <option>SP</option>
+                        <option>SE</option>
+                        <option>TO</option>
+
+                    </select>
+
+                </div>
+
+                <div class="campo">
+
+                    <label>Porte da Empresa</label>
+
+                    <select id="porte" required>
+
+                        <option value="">
+                            Selecione
+                        </option>
+
+                        <option>Estadual</option>
+                        <option>Setorial</option>
+                        <option>Central</option>
+                        <option>Regional</option>
+                        <option>Local</option>
+
+                    </select>
+
+                </div>
+
+                <div class="campo">
+
+                    <label>Sede Responsável</label>
+
+                    <input type="text" id="sede" required>
+
+                </div>
+
+                <div class="campo">
+
+                    <label>Endereço da Empresa</label>
+
+                    <input type="text" id="endereco" required>
+
+                </div>
+
+                <div class="campo">
+
+                    <label>Gestor Responsável</label>
+
+                    <input type="text" id="pastor" required>
+
+                </div>
+
+                <div class="campo">
+
+                    <label>
+                        Código da Empresa (Opcional)
+                    </label>
+
+                    <input type="text" id="codigo" maxlength="5" inputmode="numeric" placeholder="Máximo 5 números">
+
+                </div>
+
+            </div>
+
+            <div id="mensagem"></div>
+
+            <div class="aceite">
+
+                <input type="checkbox" id="aceite">
+
+                <label for="aceite">
+                    Autorizo o uso das informações para cadastro interno.
+                </label>
+
+            </div>
+
+            <div class="botoes-container">
+
+                <button type="submit" id="botao" disabled>
+
+                    Cadastrar Membro
+
+                </button>
+
+                <button type="button" id="btn-test-drive" class="btn-secondary">
+
+                    Preencher Dados Aleatórios
+
+                </button>
+
+            </div>
+
+        </form>
+
+        <div class="informacoes-igreja">
+
+            <p>
+                <strong>Contato:</strong>
+                (11) 99999-9999
+            </p>
+
+            <p>
+                <strong>Site Oficial:</strong>
+
+                <a href="https://www.empresagenerica.com.br" target="_blank">
+
+                    www.empresagenerica.com.br
+
+                </a>
+            </p>
+
+            <p>
+                Empresa Genérica - Sede Administrativa
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <script src="js/script.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,396 @@
+:root {
+  --bg-gradient-start: #0f172a;
+  --bg-gradient-end: #1e293b;
+  --primary-color: #4f46e5;
+  --primary-hover: #4338ca;
+  --primary-gradient-start: #4f46e5;
+  --primary-gradient-end: #3730a3;
+  --secondary-bg: #f8fafc;
+  --secondary-border: #cbd5e1;
+  --secondary-text: #334155;
+  --secondary-hover: #e2e8f0;
+  --text-primary: #0f172a;
+  --text-muted: #64748b;
+  --border-color: #cbd5e1;
+  --focus-ring: rgba(79, 70, 229, 0.2);
+}
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body{
+
+  font-family: 'Poppins', sans-serif;
+
+  background:
+  linear-gradient(
+    135deg,
+    var(--bg-gradient-start),
+    var(--bg-gradient-end)
+  );
+
+  min-height: 100vh;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  padding: 30px;
+}
+
+.container{
+
+  width: 100%;
+
+  max-width: 1100px;
+
+  background: white;
+
+  padding: 40px;
+
+  border-radius: 20px;
+
+  box-shadow:
+  0 10px 40px rgba(0,0,0,0.25);
+
+  animation: aparecer 0.4s ease;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  color: var(--primary-color);
+}
+
+.header-logo h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+}
+
+.logo-icon {
+  stroke: var(--primary-color);
+}
+
+h1{
+
+  text-align: center;
+
+  color: var(--text-primary);
+
+  margin-bottom: 8px;
+
+  font-size: 28px;
+}
+
+.subtitulo{
+
+  text-align: center;
+
+  color: var(--text-muted);
+
+  margin-top: -4px;
+
+  margin-bottom: 25px;
+
+  font-size: 15px;
+
+  font-weight: 500;
+}
+
+form{
+
+  display: flex;
+
+  flex-direction: column;
+}
+
+label{
+
+  margin-bottom: 6px;
+
+  margin-top: 12px;
+
+  font-weight: 600;
+
+  color: #334155;
+}
+
+input,
+select{
+
+  padding: 14px;
+
+  border-radius: 10px;
+
+  border: 1px solid var(--border-color);
+
+  outline: none;
+
+  font-size: 15px;
+
+  transition: 0.3s;
+}
+
+input:focus,
+select:focus{
+
+  border-color: var(--primary-color);
+
+  box-shadow:
+  0 0 0 4px var(--focus-ring);
+}
+
+.botoes-container {
+  display: flex;
+  gap: 15px;
+  margin-top: 25px;
+  flex-wrap: wrap;
+}
+
+.botoes-container button {
+  flex: 1;
+  min-width: 200px;
+  margin-top: 0;
+}
+
+button{
+
+  padding: 15px 20px;
+
+  border: none;
+
+  border-radius: 12px;
+
+  background:
+  linear-gradient(
+    135deg,
+    var(--primary-gradient-start),
+    var(--primary-gradient-end)
+  );
+
+  color: white;
+
+  font-size: 16px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.3s;
+}
+
+button:hover:not(:disabled){
+
+  transform: translateY(-2px);
+
+  box-shadow:
+  0 10px 20px rgba(79, 70, 229, 0.25);
+}
+
+button:disabled{
+
+  opacity: 0.65;
+
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: var(--secondary-bg);
+  color: var(--secondary-text);
+  border: 1px solid var(--secondary-border);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--secondary-hover);
+  color: var(--text-primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+#mensagem{
+
+  margin-top: 20px;
+
+  padding: 14px;
+
+  border-radius: 10px;
+
+  text-align: center;
+
+  font-weight: 600;
+
+  display: none;
+}
+
+.sucesso{
+
+  display: block;
+
+  background: #dcfce7;
+
+  color: #166534;
+
+  border: 1px solid #86efac;
+}
+
+.erro{
+
+  display: block;
+
+  background: #fee2e2;
+
+  color: #991b1b;
+
+  border: 1px solid #fca5a5;
+}
+
+input.erro-input{
+
+  border: 2px solid #ef4444;
+}
+
+#erro-cpf{
+
+  color: #dc2626;
+
+  margin-top: 5px;
+
+  font-size: 13px;
+}
+
+@keyframes aparecer{
+
+  from{
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to{
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.grid{
+
+  display: grid;
+
+  grid-template-columns:
+  repeat(2, 1fr);
+
+  gap: 20px;
+}
+
+.campo{
+
+  display: flex;
+
+  flex-direction: column;
+}
+
+.aceite{
+
+  margin-top: 20px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  font-size: 14px;
+}
+
+.aceite input{
+
+  width: 18px;
+
+  height: 18px;
+}
+
+@media(max-width: 768px){
+
+  .grid{
+
+    grid-template-columns: 1fr;
+  }
+
+  body{
+
+    height: auto;
+  }
+
+  .container{
+
+    margin: 20px 0;
+  }
+
+  .botoes-container {
+    flex-direction: column;
+  }
+
+  .botoes-container button {
+    width: 100%;
+  }
+}
+
+@media(max-width: 500px){
+
+  .container{
+    padding: 25px;
+  }
+
+  h1{
+    font-size: 24px;
+  }
+}
+
+/* INFORMAÇÕES */
+
+.informacoes-igreja{
+
+  margin-top: 25px;
+
+  padding-top: 20px;
+
+  border-top: 1px solid #e2e8f0;
+
+  text-align: center;
+
+  font-size: 14px;
+
+  color: #64748b;
+}
+
+.informacoes-igreja p{
+
+  margin: 8px 0;
+}
+
+.informacoes-igreja a{
+
+  color: var(--primary-color);
+
+  text-decoration: none;
+
+  font-weight: 600;
+}
+
+.informacoes-igreja a:hover{
+
+  text-decoration: underline;
+}
+
+.informacoes-igreja strong{
+
+  color: #334155;
+}
