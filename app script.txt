@@ -1,119 +1,196 @@
+/**
+ ==============================================================================
+ SISTEMA DE CADASTRO DE MEMBROS / COLABORADORES - BACKEND GOOGLE APPS SCRIPT
+ ==============================================================================
+
+ PASSO A PASSO PARA CONFIGURAÇÃO E IMPLANTAÇÃO:
+
+ 1. CRIAR A PLANILHA NO GOOGLE SHEETS:
+    - Acesse o Google Drive (https://drive.google.com) e crie uma nova planilha.
+    - Dê o nome desejado para a planilha (ex: "Cadastro de Membros").
+    - Copie o ID da planilha contido na URL:
+      https://docs.google.com/spreadsheets/d/ [SEU_ID_AQUI] /edit
+
+ 2. ABRIR O EDITOR DE SCRIPT:
+    - Na planilha, acesse o menu: Extensões > Apps Script.
+    - Apague qualquer código pré-existente e cole este código completo no arquivo 'Código.gs'.
+
+ 3. CONFIGURAR O SCRIPT:
+    - Substitua o valor da constante 'SPREADSHEET_ID' abaixo pelo ID da sua planilha.
+    - Se desejar, ajuste o nome da aba na constante 'SHEET_NAME' (padrão: "Membros").
+
+ 4. EXECUTAR O SETUP INICIAL (OBRIGATÓRIO):
+    - No menu superior do Apps Script, selecione a função 'setupSheet' e clique em "Executar".
+    - Conceda as permissões solicitadas pelo Google na primeira execução.
+    - Esta função criará e formatará a aba com os cabeçalhos das colunas automaticamente.
+
+ 5. IMPLANTAR COMO WEB APP:
+    - Clique no botão "Implantar" (canto superior direito) > "Nova implantação".
+    - Em "Selecionar tipo", escolha "App da Web".
+    - Preencha:
+      * Descrição: "API v1.0 - Cadastro de Membros"
+      * Executar como: "Eu" (seu e-mail)
+      * Quem tem acesso: "Qualquer pessoa" (ou "Anyone")
+    - Clique em "Implantar".
+    - Copie o "URL do app da Web" gerado.
+
+ 6. CONECTAR AO FRONTEND:
+    - Cole o URL copiado no arquivo 'js/script.js' na variável 'URL_API'.
+ ==============================================================================
+*/
+
+// CONFIGURAÇÕES DO SISTEMA
+const CONFIG = {
+  SPREADSHEET_ID: "SUA_ID_DA_PLANILHA_AQUI", // Insira aqui o ID da sua Planilha
+  SHEET_NAME: "Membros",                      // Nome da aba na planilha
+  HEADERS: [
+    "Data / Hora",
+    "Nome Completo",
+    "Data de Nascimento",
+    "CPF",
+    "Tempo de Empresa / Batismo (anos)",
+    "Contato",
+    "Cidade",
+    "Estado",
+    "Porte da Empresa",
+    "Sede Responsável",
+    "Endereço da Empresa",
+    "Gestor Responsável",
+    "Código da Empresa"
+  ]
+};
+
+/**
+ * Função de inicialização: Cria a aba e formata o cabeçalho se necessário.
+ * Execute esta função manualmente uma vez no Apps Script antes de usar o Web App.
+ */
+function setupSheet() {
+  const planilha = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+  let aba = planilha.getSheetByName(CONFIG.SHEET_NAME);
+
+  if (!aba) {
+    aba = planilha.insertSheet(CONFIG.SHEET_NAME);
+  }
+
+  if (aba.getLastRow() === 0) {
+    aba.appendRow(CONFIG.HEADERS);
+    const cabecalho = aba.getRange(1, 1, 1, CONFIG.HEADERS.length);
+    cabecalho.setFontWeight("bold");
+    cabecalho.setBackground("#4f46e5");
+    cabecalho.setFontColor("#ffffff");
+    aba.setFrozenRows(1);
+  }
+
+  Logger.log("Aba '" + CONFIG.SHEET_NAME + "' configurada com sucesso!");
+}
+
+/**
+ * Endpoint GET: Teste de conectividade e status da API
+ */
+function doGet(e) {
+  return resposta({
+    sucesso: true,
+    status: "ativo",
+    mensagem: "API do Sistema de Cadastro está operacional."
+  });
+}
+
+/**
+ * Endpoint POST: Recebe os dados do formulário e grava na planilha
+ */
 function doPost(e) {
-
   try {
-
-    const ID_PLANILHA =
-    "YOUR_SPREADSHEET_ID_HERE";
-
-    const planilha =
-    SpreadsheetApp.openById(
-      ID_PLANILHA
-    );
-
-    const aba =
-    planilha.getSheetByName(
-      "Membros"
-    );
-
-    const dados =
-    JSON.parse(
-      e.postData.contents
-    );
-
-    const cpf =
-    limparCPF(dados.cpf);
-
-    /* CHAVE ÚNICA */
-
-    const props =
-    PropertiesService
-      .getScriptProperties();
-
-    const chaveCPF =
-    "cpf_" + cpf;
-
-    /* VERIFICAR CPF */
-
-    if(props.getProperty(chaveCPF)){
-
+    if (!e || !e.postData || !e.postData.contents) {
       return resposta({
         sucesso: false,
-        mensagem:
-        "CPF já existe."
+        mensagem: "Nenhum dado foi enviado no corpo da requisição."
       });
     }
 
-    /* SALVAR CPF IMEDIATAMENTE */
+    const dados = JSON.parse(e.postData.contents);
 
-    props.setProperty(
-      chaveCPF,
-      "true"
+    // Validação de campo obrigatório básico
+    if (!dados.cpf || !dados.nome) {
+      return resposta({
+        sucesso: false,
+        mensagem: "Campos obrigatórios (Nome e CPF) não foram preenchidos."
+      });
+    }
+
+    const cpfLimpo = limparCPF(dados.cpf);
+
+    // Verificação de duplicidade de CPF via Script Properties
+    const props = PropertiesService.getScriptProperties();
+    const chaveCPF = "cpf_" + cpfLimpo;
+
+    if (props.getProperty(chaveCPF)) {
+      return resposta({
+        sucesso: false,
+        mensagem: "Este CPF já foi cadastrado no sistema."
+      });
+    }
+
+    // Obter planilha e aba
+    const planilha = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+    let aba = planilha.getSheetByName(CONFIG.SHEET_NAME);
+
+    if (!aba) {
+      setupSheet();
+      aba = planilha.getSheetByName(CONFIG.SHEET_NAME);
+    }
+
+    // Grava a propriedade do CPF para evitar requisições simultâneas duplicadas
+    props.setProperty(chaveCPF, new Date().toISOString());
+
+    // Data e Hora do cadastro
+    const dataHoraAtual = Utilities.formatDate(
+      new Date(),
+      Session.getScriptTimeZone() || "GMT-3",
+      "dd/MM/yyyy HH:mm:ss"
     );
 
-    /* SALVAR MEMBRO */
-
+    // Formatar e Inserir nova linha na planilha
     aba.appendRow([
-
-      dados.nome || "",
-
+      dataHoraAtual,
+      dados.nome ? String(dados.nome).trim() : "",
       dados.nascimento || "",
-
-      cpf,
-
+      cpfLimpo,
       dados.batismo || "",
-
-      dados.contato || "",
-
-      dados.cidade || "",
-
+      dados.contato ? String(dados.contato).trim() : "",
+      dados.cidade ? String(dados.cidade).trim() : "",
       dados.estado || "",
-
       dados.porte || "",
-
-      dados.sede || "",
-
-      dados.endereco || "",
-
-      dados.pastor || "",
-
-      dados.codigo || ""
-
+      dados.sede ? String(dados.sede).trim() : "",
+      dados.endereco ? String(dados.endereco).trim() : "",
+      dados.pastor ? String(dados.pastor).trim() : "",
+      dados.codigo ? String(dados.codigo).trim() : ""
     ]);
 
     return resposta({
       sucesso: true,
-      mensagem:
-      "Cadastro realizado com sucesso!"
+      mensagem: "Cadastro realizado com sucesso!"
     });
 
-  } catch(erro){
-
+  } catch (erro) {
     return resposta({
       sucesso: false,
-      mensagem:
-      erro.toString()
+      mensagem: "Erro interno no servidor: " + erro.toString()
     });
   }
 }
 
-/* LIMPAR CPF */
-
-function limparCPF(cpf){
-
-  return String(cpf)
-    .replace(/\D/g, "")
-    .trim();
+/**
+ * Remove caracteres não numéricos do CPF
+ */
+function limparCPF(cpf) {
+  return String(cpf).replace(/\D/g, "").trim();
 }
 
-/* RESPOSTA */
-
-function resposta(objeto){
-
+/**
+ * Formata a resposta da API como JSON
+ */
+function resposta(objeto) {
   return ContentService
-    .createTextOutput(
-      JSON.stringify(objeto)
-    )
-    .setMimeType(
-      ContentService.MimeType.JSON
-    );
+    .createTextOutput(JSON.stringify(objeto))
+    .setMimeType(ContentService.MimeType.JSON);
 }
